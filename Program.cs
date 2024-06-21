@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using SummerInternship;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,8 +9,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+   // options.JsonSerializerOptions.Converters.Add(new QuestionDtoConverter());
+    // Add the custom QuestionConverter
 
+    // Configure other Newtonsoft.Json settings if needed
+    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+});
 
+AppBootstrapper.InitServices(builder.Services,builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
